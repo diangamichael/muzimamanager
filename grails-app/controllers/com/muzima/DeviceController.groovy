@@ -2,8 +2,6 @@ package com.muzima
 
 import grails.transaction.Transactional
 
-import javax.persistence.criteria.JoinType
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -21,7 +19,7 @@ class DeviceController {
                 sim          : deviceInstance.sim,
                 name         : deviceInstance.name,
                 description  : deviceInstance.description,
-                purchasedDate: deviceInstance.purchasedDate.format("dd-MMM-yyyy"),
+                purchasedDate: deviceInstance.purchasedDate.time,
                 status       : deviceInstance.status,
                 deviceType   : [
                         id           : deviceInstance.deviceType.id,
@@ -47,7 +45,7 @@ class DeviceController {
             Device.createCriteria().listDistinct() {
                 firstResult: params.offset
                 maxResults: params.max
-                createAlias("deviceType", "deviceType", JoinType.LEFT)
+                createAlias("deviceType", "deviceType")
                 or {
                     ilike("imei", "%" + params.query + "%")
                     ilike("sim", "%" + params.query + "%")
@@ -60,7 +58,7 @@ class DeviceController {
 
             deviceCount =
                     Device.createCriteria().list() {
-                        createAlias("deviceType", "deviceType", JoinType.LEFT)
+                        createAlias("deviceType", "deviceType")
                         or {
                             ilike("imei", "%" + params.query + "%")
                             ilike("sim", "%" + params.query + "%")
@@ -104,11 +102,15 @@ class DeviceController {
     @Transactional
     def update() {
         def device = request.JSON
-        def deviceInstance = new Device(device)
+        def deviceInstance = Device.get(device["id"])
         if (deviceInstance == null) {
             notFound()
             return
         }
+
+        def jsonDevice = new Device(device)
+        deviceInstance.updateDevice(jsonDevice)
+
         deviceInstance.save(flush: true, failOnError: true)
         response.status = OK.value();
         render(contentType: "application/json") {

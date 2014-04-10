@@ -22,7 +22,7 @@ class PersonController {
         def person = [
                 id             : personInstance.id,
                 gender         : personInstance.gender,
-                birthdate      : personInstance.birthdate.format("dd-MMM-yyyy"),
+                birthdate      : personInstance.birthdate.time,
                 personNames    : personInstance.personNames.collect {
                     [
                             id        : it.id,
@@ -64,7 +64,7 @@ class PersonController {
             Person.createCriteria().listDistinct() {
                 firstResult: params.offset
                 maxResults: params.max
-                personNames(JoinType.LEFT) {
+                personNames() {
                     or {
                         ilike("givenName", "%" + params.query + "%")
                         ilike("familyName", "%" + params.query + "%")
@@ -74,7 +74,7 @@ class PersonController {
                 personMap.add(convert(it))
             }
             personCount = Person.createCriteria().get {
-                personNames(JoinType.LEFT) {
+                personNames() {
                     or {
                         ilike("givenName", "%" + params.query + "%")
                         ilike("familyName", "%" + params.query + "%")
@@ -131,7 +131,7 @@ class PersonController {
             return
         }
         personInstance.setGender(person["gender"])
-        personInstance.setBirthdate(Date.parse("dd-MMM-yyyy", person["birthdate"]))
+        personInstance.setBirthdate(Date.parse("yyyy-MM-dd", person["birthdate"]))
         for (personName in person["personNames"]) {
             def jsonPersonName = new PersonName(personName)
             if (personName["id"] != null) {

@@ -24,4 +24,13 @@ class Device {
         deviceType nullable: false
         status nullable: false, blank: false
     }
+
+    void updateDevice(Device device) {
+        this.imei = device.imei
+        this.sim = device.sim
+        this.name = device.name
+        this.description = device.description
+        this.purchasedDate = device.purchasedDate
+        this.status = device.status
+    }
 }
