@@ -2,8 +2,6 @@ package com.muzima
 
 import grails.transaction.Transactional
 
-import javax.persistence.criteria.JoinType
-
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
@@ -102,16 +100,24 @@ class PersonController {
     @Transactional
     def save() {
         def person = request.JSON
-        def personInstance = new Person(person)
+        def personInstance = new Person()
+        personInstance.setGender(person["gender"])
+        personInstance.setBirthdate(new Date(person["birthdate"]))
+
+        Institution.all.each {
+            // hacky, but we're assuming we have only 1 institution for now in each installation.
+            personInstance.setInstitution(it)
+        }
+
         if (personInstance == null) {
             notFound()
             return
         }
-        for (name in person["names"]) {
+        for (name in person["personNames"]) {
             def personNameInstance = new PersonName(name)
             personInstance.addToPersonNames(personNameInstance)
         }
-        for (address in person["addresses"]) {
+        for (address in person["personAddresses"]) {
             def personAddressInstance = new PersonAddress(address)
             personInstance.addToPersonAddresses(personAddressInstance)
         }
@@ -131,7 +137,7 @@ class PersonController {
             return
         }
         personInstance.setGender(person["gender"])
-        personInstance.setBirthdate(Date.parse("yyyy-MM-dd", person["birthdate"]))
+        personInstance.setBirthdate(new Date(person["birthdate"]))
         for (personName in person["personNames"]) {
             def jsonPersonName = new PersonName(personName)
             if (personName["id"] != null) {
