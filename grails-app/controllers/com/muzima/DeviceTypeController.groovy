@@ -58,6 +58,12 @@ class DeviceTypeController {
                             countDistinct("id")
                         }
                     }
+        } else {
+            DeviceType.list(params).each {
+                deviceTypeMap.add(convert(it))
+            }
+
+            deviceTypeCount = DeviceType.count();
         }
 
         render(contentType: "application/json") {
