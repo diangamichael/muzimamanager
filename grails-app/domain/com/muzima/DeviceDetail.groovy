@@ -19,4 +19,10 @@ class DeviceDetail {
         subCategory nullable: false, blank: false
         categoryValue nullable: false, blank: false
     }
+
+    void updateDeviceDetail(DeviceDetail deviceDetail) {
+        this.category = deviceDetail.category
+        this.subCategory = deviceDetail.subCategory
+        this.categoryValue = deviceDetail.categoryValue
+    }
 }

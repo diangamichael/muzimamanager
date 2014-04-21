@@ -15,4 +15,9 @@ class DeviceType {
         name nullable: false, blank: false
         description nullable: false, blank: false
     }
+
+    void updateDeviceType(DeviceType deviceType) {
+        this.name = deviceType.name
+        this.description = deviceType.description
+    }
 }

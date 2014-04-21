@@ -2,7 +2,6 @@ package com.muzima
 
 import grails.transaction.Transactional
 
-import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
@@ -81,18 +80,17 @@ class DeviceTypeController {
 
     @Transactional
     def save() {
-        def deviceType = request.JSON
-        def deviceTypeInstance = new DeviceType(deviceType)
-        if (deviceTypeInstance == null) {
-            notFound()
-            return
-        }
-        for (deviceDetail in deviceType["deviceDetails"]) {
-            def deviceDetailInstance = new DeviceDetail(deviceDetail)
-            deviceTypeInstance.addToDeviceDetails(deviceDetailInstance)
+        def deviceTypeInstance = new DeviceType()
+
+        def json = request.JSON
+        def deviceType = new DeviceType(json);
+        deviceTypeInstance.updateDeviceType(deviceType)
+        json["deviceDetails"].each {
+            def deviceDetail = new DeviceDetail(it);
+            deviceTypeInstance.addToDeviceDetails(deviceDetail)
         }
         deviceTypeInstance.save(flush: true, failOnError: true)
-        response.status = CREATED.value();
+        response.status = OK.value();
         render(contentType: "application/json") {
             convert(deviceTypeInstance)
         }
@@ -100,15 +98,26 @@ class DeviceTypeController {
 
     @Transactional
     def update() {
-        def deviceType = request.JSON
-        def deviceTypeInstance = new DeviceType(deviceType)
+        def json = request.JSON
+        def deviceTypeInstance = DeviceType.get(json["id"])
         if (deviceTypeInstance == null) {
             notFound()
             return
         }
-        for (deviceDetail in deviceType["deviceDetails"]) {
-            def deviceDetailInstance = new DeviceDetail(deviceDetail)
-            deviceTypeInstance.addToDeviceDetails(deviceDetailInstance)
+
+        def deviceType = new DeviceType(json);
+        deviceTypeInstance.updateDeviceType(deviceType)
+
+        def deviceDetails = deviceTypeInstance.deviceDetails;
+        json["deviceDetails"].each {
+            def deviceDetailId = it["id"]
+            def deviceDetail = new DeviceDetail(it);
+            if (deviceDetailId != null) {
+                def deviceDetailInstance = deviceDetails.find({ it.id == deviceDetailId })
+                deviceDetailInstance.updateDeviceDetail(deviceDetail)
+            } else {
+                deviceTypeInstance.addToDeviceDetails(deviceDetail)
+            }
         }
         deviceTypeInstance.save(flush: true, failOnError: true)
         response.status = OK.value();

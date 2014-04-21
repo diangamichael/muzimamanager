@@ -86,12 +86,20 @@ class DeviceController {
 
     @Transactional
     def save() {
-        def device = request.JSON
-        def deviceInstance = new Device(device)
+        def json = request.JSON
+        def deviceInstance = new Device(json)
         if (deviceInstance == null) {
             notFound()
             return
         }
+
+        Institution.all.each {
+            // TODO: (hack) we're assuming we have only 1 institution for now in each installation.
+            deviceInstance.setInstitution(it)
+        }
+        deviceInstance.setStatus("NEW")
+        deviceInstance.setDescription("_BLANK_")
+
         deviceInstance.save(flush: true, failOnError: true)
         response.status = CREATED.value();
         render(contentType: "application/json") {
@@ -101,15 +109,19 @@ class DeviceController {
 
     @Transactional
     def update() {
-        def device = request.JSON
-        def deviceInstance = Device.get(device["id"])
+        def json = request.JSON
+        def deviceInstance = Device.get(json["id"])
         if (deviceInstance == null) {
             notFound()
             return
         }
 
-        def jsonDevice = new Device(device)
+        def jsonDevice = new Device(json)
         deviceInstance.updateDevice(jsonDevice)
+
+        def deviceType = json["deviceType"]
+        def deviceTypeInstance = DeviceType.get(deviceType["id"])
+        deviceInstance.setDeviceType(deviceTypeInstance)
 
         deviceInstance.save(flush: true, failOnError: true)
         response.status = OK.value();

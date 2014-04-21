@@ -99,13 +99,13 @@ class PersonController {
 
     @Transactional
     def save() {
-        def person = request.JSON
+        def json = request.JSON
         def personInstance = new Person()
-        personInstance.setGender(person["gender"])
-        personInstance.setBirthdate(new Date(person["birthdate"]))
+        personInstance.setGender(json["gender"])
+        personInstance.setBirthdate(new Date(json["birthdate"]))
 
         Institution.all.each {
-            // hacky, but we're assuming we have only 1 institution for now in each installation.
+            // TODO: (hack) we're assuming we have only 1 institution for now in each installation.
             personInstance.setInstitution(it)
         }
 
@@ -113,12 +113,12 @@ class PersonController {
             notFound()
             return
         }
-        for (name in person["personNames"]) {
-            def personNameInstance = new PersonName(name)
+        json["personNames"].each {
+            def personNameInstance = new PersonName(it)
             personInstance.addToPersonNames(personNameInstance)
         }
-        for (address in person["personAddresses"]) {
-            def personAddressInstance = new PersonAddress(address)
+        json["personAddresses"].each {
+            def personAddressInstance = new PersonAddress(it)
             personInstance.addToPersonAddresses(personAddressInstance)
         }
         personInstance.save(flush: true, failOnError: true)
@@ -130,36 +130,36 @@ class PersonController {
 
     @Transactional
     def update() {
-        def person = request.JSON
-        def personInstance = Person.get(person["id"])
+        def json = request.JSON
+        def personInstance = Person.get(json["id"])
         if (personInstance == null) {
             notFound()
             return
         }
-        personInstance.setGender(person["gender"])
-        personInstance.setBirthdate(new Date(person["birthdate"]))
-        for (personName in person["personNames"]) {
-            def jsonPersonName = new PersonName(personName)
-            if (personName["id"] != null) {
-                for (personInstanceName in personInstance.personNames) {
-                    if (personInstanceName.getId() == personName["id"]) {
-                        personInstanceName.updatePersonName(jsonPersonName)
-                    }
-                }
+        personInstance.setGender(json["gender"])
+        personInstance.setBirthdate(new Date(json["birthdate"]))
+
+        def personNames = personInstance.personNames
+        def personAddresses = personInstance.personAddresses
+
+        json["personNames"].each {
+            def personNameId = it["id"]
+            def personName = new PersonName(it)
+            if (personNameId != null) {
+                def personNameInstance = personNames.find({ it.id == personNameId })
+                personNameInstance.updatePersonName(personName)
             } else {
-                personInstance.addToPersonNames(jsonPersonName)
+                personInstance.addToPersonNames(personName)
             }
         }
-        for (personAddress in person["personAddresses"]) {
-            def jsonPersonAddress = new PersonAddress(personAddress)
-            if (personAddress["id"] != null) {
-                for (personInstanceAddress in personInstance.personAddresses) {
-                    if (personInstanceAddress.getId() == personAddress["id"]) {
-                        personInstanceAddress.updatePersonAddress(jsonPersonAddress)
-                    }
-                }
+        json["personAddresses"].each {
+            def personAddressId = it["id"]
+            def personAddress = new PersonAddress(it)
+            if (personAddressId != null) {
+                def personAddressInstance = personAddresses.find({ it.id == personAddressId })
+                personAddressInstance.updatePersonAddress(personAddress)
             } else {
-                personInstance.addToPersonAddresses(jsonPersonAddress)
+                personInstance.addToPersonAddresses(personAddress)
             }
         }
         personInstance.save(flush: true, failOnError: true)

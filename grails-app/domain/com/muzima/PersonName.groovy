@@ -21,7 +21,6 @@ class PersonName {
 
     void updatePersonName(PersonName personName) {
         this.preferred = personName.preferred
-
         this.prefix = personName.prefix
         this.givenName = personName.givenName
         this.middleName = personName.middleName

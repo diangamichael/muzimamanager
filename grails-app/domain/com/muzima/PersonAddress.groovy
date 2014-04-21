@@ -40,6 +40,7 @@ class PersonAddress {
     }
 
     void updatePersonAddress(PersonAddress personAddress) {
+        this.preferred = personAddress.preferred
         this.address1 = personAddress.address1
         this.address2 = personAddress.address2
         this.address3 = personAddress.address3
