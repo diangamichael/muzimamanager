@@ -131,7 +131,9 @@ class DeviceController {
     }
 
     @Transactional
-    def delete(Device deviceInstance) {
+    def delete() {
+        def json = request.JSON
+        def deviceInstance = Device.get(json["id"])
         if (deviceInstance == null) {
             notFound()
             return

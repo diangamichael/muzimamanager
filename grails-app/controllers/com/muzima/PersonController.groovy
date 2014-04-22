@@ -52,7 +52,7 @@ class PersonController {
                     ]
                 }
         ]
-        return person;
+        return person
     }
 
     def index() {
@@ -122,7 +122,7 @@ class PersonController {
             personInstance.addToPersonAddresses(personAddressInstance)
         }
         personInstance.save(flush: true, failOnError: true)
-        response.status = CREATED.value();
+        response.status = CREATED.value()
         render(contentType: "application/json") {
             convert(personInstance)
         }
@@ -163,14 +163,16 @@ class PersonController {
             }
         }
         personInstance.save(flush: true, failOnError: true)
-        response.status = OK.value();
+        response.status = OK.value()
         render(contentType: "application/json") {
             convert(personInstance)
         }
     }
 
     @Transactional
-    def delete(Person personInstance) {
+    def delete() {
+        def json = request.JSON
+        def personInstance = Person.get(json["id"])
         if (personInstance == null) {
             notFound()
             return

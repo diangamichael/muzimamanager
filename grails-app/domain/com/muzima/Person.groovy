@@ -5,7 +5,7 @@ class Person {
     String gender
     Date birthdate
 
-    static hasMany = [personNames: PersonName, personAddresses: PersonAddress]
+    static hasMany = [personNames: PersonName, personAddresses: PersonAddress, devices: Device]
 
     static belongsTo = [institution: Institution]
 

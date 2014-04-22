@@ -25,7 +25,7 @@ class DeviceTypeController {
                     ]
                 }
         ]
-        return deviceType;
+        return deviceType
     }
 
     def index() {
@@ -62,7 +62,7 @@ class DeviceTypeController {
                 deviceTypeMap.add(convert(it))
             }
 
-            deviceTypeCount = DeviceType.count();
+            deviceTypeCount = DeviceType.count()
         }
 
         render(contentType: "application/json") {
@@ -83,14 +83,14 @@ class DeviceTypeController {
         def deviceTypeInstance = new DeviceType()
 
         def json = request.JSON
-        def deviceType = new DeviceType(json);
+        def deviceType = new DeviceType(json)
         deviceTypeInstance.updateDeviceType(deviceType)
         json["deviceDetails"].each {
-            def deviceDetail = new DeviceDetail(it);
+            def deviceDetail = new DeviceDetail(it)
             deviceTypeInstance.addToDeviceDetails(deviceDetail)
         }
         deviceTypeInstance.save(flush: true, failOnError: true)
-        response.status = OK.value();
+        response.status = OK.value()
         render(contentType: "application/json") {
             convert(deviceTypeInstance)
         }
@@ -105,13 +105,13 @@ class DeviceTypeController {
             return
         }
 
-        def deviceType = new DeviceType(json);
+        def deviceType = new DeviceType(json)
         deviceTypeInstance.updateDeviceType(deviceType)
 
-        def deviceDetails = deviceTypeInstance.deviceDetails;
+        def deviceDetails = deviceTypeInstance.deviceDetails
         json["deviceDetails"].each {
             def deviceDetailId = it["id"]
-            def deviceDetail = new DeviceDetail(it);
+            def deviceDetail = new DeviceDetail(it)
             if (deviceDetailId != null) {
                 def deviceDetailInstance = deviceDetails.find({ it.id == deviceDetailId })
                 deviceDetailInstance.updateDeviceDetail(deviceDetail)
@@ -120,14 +120,16 @@ class DeviceTypeController {
             }
         }
         deviceTypeInstance.save(flush: true, failOnError: true)
-        response.status = OK.value();
+        response.status = OK.value()
         render(contentType: "application/json") {
             convert(deviceTypeInstance)
         }
     }
 
     @Transactional
-    def delete(DeviceType deviceTypeInstance) {
+    def delete() {
+        def json = request.JSON
+        def deviceTypeInstance = DeviceType.get(json["id"])
         if (deviceTypeInstance == null) {
             notFound()
             return
