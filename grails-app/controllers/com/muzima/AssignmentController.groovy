@@ -57,6 +57,7 @@ class AssignmentController {
                 maxResults: params.max
                 createAlias("device", "device")
                 createAlias("person", "person")
+                eq("voided", Boolean.FALSE)
                 if (params.containsKey("deviceId")) {
                     eq("device.id", params.long("deviceId"))
                 }
@@ -68,6 +69,7 @@ class AssignmentController {
             }
 
             assignmentCount = Assignment.createCriteria().get {
+                eq("voided", Boolean.FALSE)
                 if (params.containsKey("deviceId")) {
                     eq("device.id", params.long("deviceId"))
                 }
@@ -96,7 +98,11 @@ class AssignmentController {
     @Transactional
     def save() {
         def json = request.JSON
-        def assignmentInstance = new Device(json)
+        def device = json["device"]
+        def person = json["person"]
+        def assignmentInstance = new Assignment(
+                device: Device.get(device["id"]), person: Person.get(person["id"])
+        )
         if (assignmentInstance == null) {
             notFound()
             return
@@ -112,11 +118,18 @@ class AssignmentController {
     @Transactional
     def update() {
         def json = request.JSON
-        def assignmentInstance = DeviceType.get(json["id"])
+        def assignmentInstance = Assignment.get(json["id"])
         if (assignmentInstance == null) {
             notFound()
             return
         }
+
+        def device = json["device"]
+        def deviceInstance = Device.get(device["id"])
+        def person = json["person"]
+        def personInstance = Person.get(person["id"])
+        assignmentInstance.setDevice(deviceInstance)
+        assignmentInstance.setPerson(personInstance)
 
         assignmentInstance.save flush: true, failOnError: true
         response.status = OK.value()
