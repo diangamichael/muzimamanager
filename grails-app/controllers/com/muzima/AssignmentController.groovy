@@ -138,18 +138,6 @@ class AssignmentController {
         }
     }
 
-    @Transactional
-    def delete() {
-        def json = request.JSON
-        def assignmentInstance = DeviceType.get(json["id"])
-        if (assignmentInstance == null) {
-            notFound()
-            return
-        }
-        assignmentInstance.delete flush: true
-        render status: NO_CONTENT
-    }
-
     protected void notFound() {
         render status: NOT_FOUND
     }

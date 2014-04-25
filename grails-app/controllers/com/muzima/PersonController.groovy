@@ -169,18 +169,6 @@ class PersonController {
         }
     }
 
-    @Transactional
-    def delete() {
-        def json = request.JSON
-        def personInstance = Person.get(json["id"])
-        if (personInstance == null) {
-            notFound()
-            return
-        }
-        personInstance.delete flush: true
-        render status: NO_CONTENT
-    }
-
     protected void notFound() {
         render status: NOT_FOUND
     }

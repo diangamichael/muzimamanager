@@ -126,18 +126,6 @@ class DeviceTypeController {
         }
     }
 
-    @Transactional
-    def delete() {
-        def json = request.JSON
-        def deviceTypeInstance = DeviceType.get(json["id"])
-        if (deviceTypeInstance == null) {
-            notFound()
-            return
-        }
-        deviceTypeInstance.delete flush: true
-        render status: NO_CONTENT
-    }
-
     protected void notFound() {
         render status: NOT_FOUND
     }

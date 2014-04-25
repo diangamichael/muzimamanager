@@ -6,6 +6,7 @@ class Device {
     String sim
     String name
     String description
+    String registrationKey
     Date purchasedDate
     String status
     DeviceType deviceType
@@ -13,13 +14,16 @@ class Device {
     static belongsTo = [institution: Institution]
 
     static mapping = {
+        registrationKey column: "registration_key", sqlType: "varchar", length: 1024
         description column: "description", sqlType: "varchar", length: 1024
     }
 
     static constraints = {
-        imei nullable: false, blank: false
+        imei nullable: false, blank: false, unique: true
+        sim nullable: false, blank: false, unique: true
+        name nullable: false, blank: false
         description nullable: false, blank: false
-        sim nullable: false, blank: false
+        registrationKey nullable: true, blank: true
         purchasedDate nullable: false, max: new Date()
         deviceType nullable: false
         status nullable: false, blank: false

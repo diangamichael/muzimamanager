@@ -45,6 +45,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        mavenRepo "https://github.com/slorber/gcm-server-repository/raw/master/releases/"
     }
 
     dependencies {
@@ -80,5 +81,6 @@ grails.project.dependency.resolution = {
         //compile ":coffee-asset-pipeline:1.5.0"
         //compile ":handlebars-asset-pipeline:1.3.0.1"
         runtime ":cors:1.1.4"
+        compile ":android-gcm:0.2"
     }
 }

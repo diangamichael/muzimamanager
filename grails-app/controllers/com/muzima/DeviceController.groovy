@@ -14,14 +14,15 @@ class DeviceController {
 
     def convert(Device deviceInstance) {
         def device = [
-                id           : deviceInstance.id,
-                imei         : deviceInstance.imei,
-                sim          : deviceInstance.sim,
-                name         : deviceInstance.name,
-                description  : deviceInstance.description,
-                purchasedDate: deviceInstance.purchasedDate.time,
-                status       : deviceInstance.status,
-                deviceType   : [
+                id             : deviceInstance.id,
+                imei           : deviceInstance.imei,
+                sim            : deviceInstance.sim,
+                name           : deviceInstance.name,
+                description    : deviceInstance.description,
+                purchasedDate  : deviceInstance.purchasedDate.time,
+                status         : deviceInstance.status,
+                registrationKey: deviceInstance.registrationKey,
+                deviceType     : [
                         id           : deviceInstance.deviceType.id,
                         name         : deviceInstance.deviceType.name,
                         description  : deviceInstance.deviceType.description,
@@ -43,8 +44,10 @@ class DeviceController {
         def deviceCount = 0
         if (params.query?.trim()) {
             Device.createCriteria().listDistinct() {
-                firstResult: params.offset
-                maxResults: params.max
+                firstResult:
+                params.offset
+                maxResults:
+                params.max
                 createAlias("deviceType", "deviceType")
                 or {
                     ilike("imei", "%" + params.query + "%")
@@ -97,7 +100,7 @@ class DeviceController {
             // TODO: (hack) we're assuming we have only 1 institution for now in each installation.
             deviceInstance.setInstitution(it)
         }
-        deviceInstance.setStatus("NEW")
+        deviceInstance.setStatus("New Device")
         deviceInstance.setDescription("_BLANK_")
 
         deviceInstance.save(flush: true, failOnError: true)
@@ -128,18 +131,6 @@ class DeviceController {
         render(contentType: "application/json") {
             convert(deviceInstance)
         }
-    }
-
-    @Transactional
-    def delete() {
-        def json = request.JSON
-        def deviceInstance = Device.get(json["id"])
-        if (deviceInstance == null) {
-            notFound()
-            return
-        }
-        deviceInstance.delete flush: true
-        render status: NO_CONTENT
     }
 
     protected void notFound() {
