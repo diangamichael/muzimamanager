@@ -65,7 +65,7 @@ class BootStrap {
         deviceTypeInstance.save(flush: true, failOnError: true)
 
         def firstDevice = new Device(imei: "000000000000000", sim: "15555215554", name: "HCT Device #001",
-                description: "HCT device #001 description", status: "NEW", purchasedDate: new Date().parse("dd/MM/yyyy", "22/03/2013"),
+                description: "HCT device #001 description", status: "New", purchasedDate: new Date().parse("dd/MM/yyyy", "22/03/2013"),
                 deviceType: deviceTypeInstance, institution: firstInstitution)
         firstDevice.save(flush: true, failOnError: true)
 
