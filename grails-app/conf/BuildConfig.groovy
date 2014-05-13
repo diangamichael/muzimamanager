@@ -46,6 +46,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
         mavenRepo "https://github.com/slorber/gcm-server-repository/raw/master/releases/"
+        mavenRepo "http://repo.spring.io/milestone/"
     }
 
     dependencies {
@@ -74,6 +75,7 @@ grails.project.dependency.resolution = {
 
         // An alternative to the default resources plugin is the asset-pipeline plugin
         //compile ":asset-pipeline:1.6.1"
+        compile ":spring-security-core:2.0-RC2"
 
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:1.5.5"

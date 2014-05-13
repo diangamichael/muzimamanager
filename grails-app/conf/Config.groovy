@@ -122,3 +122,9 @@ log4j = {
 
 grails.mime.use.accept.header = true
 grails.mime.disable.accept.header.userAgents = []
+grails.plugin.springsecurity.useBasicAuth = true
+grails.plugin.springsecurity.basic.realmName = "mUzima Device Management"
+grails.plugin.springsecurity.filterChain.chainMap = [
+        '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter',
+        '/**': 'JOINED_FILTERS,-basicAuthenticationFilter,-basicExceptionTranslationFilter'
+]
