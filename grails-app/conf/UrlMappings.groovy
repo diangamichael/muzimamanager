@@ -2,6 +2,7 @@ class UrlMappings {
 
     static mappings = {
 
+        "/api/authentication"(controller: "authentication", action: "index", method: "GET")
         "/api/person"(resources: "person", excludes: ['create', 'edit', 'delete'])
         "/api/institution"(resources: "institution", excludes: ['create', 'edit', 'delete'])
         "/api/device"(resources: "device", excludes: ['create', 'edit', 'delete'])

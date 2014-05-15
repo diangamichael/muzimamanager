@@ -5,10 +5,29 @@ import com.muzima.Institution
 import com.muzima.Person
 import com.muzima.PersonAddress
 import com.muzima.PersonName
+import com.muzima.Role
+import com.muzima.User
+import com.muzima.UserRole
 
 class BootStrap {
 
     def init = { servletContext ->
+
+        def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+        def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
+        assert Role.count() == 2
+
+        def testUser1 = new User(username: 'me', password: 'password')
+        testUser1.save(flush: true)
+
+        def testUser2 = new User(username: 'you', password: 'password')
+        testUser2.save(flush: true)
+        assert User.count() == 2
+
+        UserRole.create testUser1, adminRole, true
+        UserRole.create testUser2, userRole, true
+        assert UserRole.count() == 2
+
         def firstInstitution = new Institution(name: "First Institution", description: "This is the first institution.")
         firstInstitution.save(flush: true)
 

@@ -1,10 +1,10 @@
 package com.muzima
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
-import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
 @Transactional(readOnly = true)
@@ -55,6 +55,7 @@ class PersonController {
         return person
     }
 
+    @Secured(['ROLE_ADMIN'])
     def index() {
         def personMap = []
         def personCount = 0
