@@ -1,5 +1,7 @@
 package com.muzima
 
+import grails.plugin.springsecurity.annotation.Secured
+
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
 
@@ -9,6 +11,7 @@ class MessageController {
 
     def androidGcmService
 
+    @Secured(['isFullyAuthenticated()'])
     def index() {
         println(params);
         def deviceInstance = Device.get(params.deviceId);
@@ -24,6 +27,7 @@ class MessageController {
         render status: OK
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def save() {
         def json = request.JSON
         def operation = json["operation"]

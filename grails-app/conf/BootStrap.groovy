@@ -17,7 +17,7 @@ class BootStrap {
         def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
         assert Role.count() == 2
 
-        def testUser1 = new User(username: 'me', password: 'password')
+        def testUser1 = new User(username: 'root', password: 'password')
         testUser1.save(flush: true)
 
         def testUser2 = new User(username: 'you', password: 'password')

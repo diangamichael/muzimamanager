@@ -1,9 +1,9 @@
 package com.muzima
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.transaction.Transactional
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
-import static org.springframework.http.HttpStatus.NO_CONTENT
 import static org.springframework.http.HttpStatus.OK
 
 @Transactional(readOnly = true)
@@ -28,6 +28,7 @@ class DeviceTypeController {
         return deviceType
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def index() {
         def deviceTypeMap = []
         def deviceTypeCount = 0
@@ -71,6 +72,7 @@ class DeviceTypeController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def show() {
         def deviceTypeInstance = DeviceType.get(params.id)
         render(contentType: "application/json") {
@@ -78,6 +80,7 @@ class DeviceTypeController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def save() {
         def deviceTypeInstance = new DeviceType()
@@ -96,6 +99,7 @@ class DeviceTypeController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def update() {
         def json = request.JSON

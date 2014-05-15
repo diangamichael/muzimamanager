@@ -55,7 +55,7 @@ class PersonController {
         return person
     }
 
-    @Secured(['ROLE_ADMIN'])
+    @Secured(['isFullyAuthenticated()'])
     def index() {
         def personMap = []
         def personCount = 0
@@ -91,6 +91,7 @@ class PersonController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def show() {
         def personInstance = Person.get(params.id)
         render(contentType: "application/json") {
@@ -98,6 +99,7 @@ class PersonController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def save() {
         def json = request.JSON
@@ -129,6 +131,7 @@ class PersonController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def update() {
         def json = request.JSON

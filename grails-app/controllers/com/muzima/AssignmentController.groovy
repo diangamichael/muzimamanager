@@ -1,5 +1,6 @@
 package com.muzima
 
+import grails.plugin.springsecurity.annotation.Secured
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
@@ -48,6 +49,7 @@ class AssignmentController {
         return assignment
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def index() {
         def assignmentMap = []
         def assignmentCount = 0
@@ -88,6 +90,7 @@ class AssignmentController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     def show() {
         def assignmentInstance = Assignment.get(params.id)
         render(contentType: "application/json") {
@@ -95,6 +98,7 @@ class AssignmentController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def save() {
         def json = request.JSON
@@ -115,6 +119,7 @@ class AssignmentController {
         }
     }
 
+    @Secured(['isFullyAuthenticated()'])
     @Transactional
     def update() {
         def json = request.JSON
