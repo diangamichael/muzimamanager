@@ -45,10 +45,8 @@ class DeviceController {
         def deviceCount = 0
         if (params.query?.trim()) {
             Device.createCriteria().listDistinct() {
-                firstResult:
-                params.offset
-                maxResults:
-                params.max
+                firstResult: params.offset
+                maxResults: params.max
                 createAlias("deviceType", "deviceType")
                 or {
                     ilike("imei", "%" + params.query + "%")

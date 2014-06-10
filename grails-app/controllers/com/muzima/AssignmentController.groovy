@@ -2,7 +2,9 @@ package com.muzima
 
 import grails.plugin.springsecurity.annotation.Secured
 
-import static org.springframework.http.HttpStatus.*
+import static org.springframework.http.HttpStatus.CREATED
+import static org.springframework.http.HttpStatus.NOT_FOUND
+import static org.springframework.http.HttpStatus.OK
 import grails.transaction.Transactional
 
 @Transactional(readOnly = true)

@@ -37,4 +37,8 @@ class AuthenticationController {
             convert(userInstance)
         }
     }
+
+    def save() {
+
+    }
 }
