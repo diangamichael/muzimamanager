@@ -22,7 +22,8 @@ class MessageController {
 
         def apiKey = "AIzaSyBZteShRq5BsZADpC6KO9BFkIDLhA4PhUE"
         def message = [command: params.command]
-        androidGcmService.sendMessage(message, [deviceInstance.registrationKey], "[mUzima command center]", apiKey)
+        def messageStatus = androidGcmService.sendMessage(message, [deviceInstance.registrationKey], "[mUzima command center]", apiKey)
+        log.info messageStatus
 
         render status: OK
     }
