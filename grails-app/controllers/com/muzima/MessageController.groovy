@@ -27,21 +27,36 @@ class MessageController {
         render status: OK
     }
 
-    @Secured(['isFullyAuthenticated()'])
+    @Secured(['isAnonymous()'])
     def save() {
+        println request.JSON
         def json = request.JSON
         def operation = json["operation"]
         if (operation == "register") {
             def deviceInstance = Device.findByImei(json["imei"])
             if (deviceInstance == null) {
-                notFound()
-                return
+                deviceInstance = new Device()
+                deviceInstance.setSim(json["sim"])
+                deviceInstance.setImei(json["imei"])
+                deviceInstance.setPurchasedDate(new Date())
+
+                def deviceTypeInstance = DeviceType.findByName(json["type"])
+                deviceInstance.setDeviceType(deviceTypeInstance)
+
+                def count = Device.countByDeviceType(deviceTypeInstance)
+                deviceInstance.setName(json["type"] + " #" + count)
+
+                Institution.all.each {
+                    // TODO: (hack) we're assuming we have only 1 institution for now in each installation.
+                    deviceInstance.setInstitution(it)
+                }
+                deviceInstance.setDescription("_BLANK_")
             }
-            deviceInstance.setRegistrationKey(json["regId"])
+            deviceInstance.setRegistrationKey(json["regid"])
             deviceInstance.setStatus("Registered")
             deviceInstance.save(flush: true, failOnError: true)
         } else if (operation == "unregister") {
-            def deviceInstance = Device.findByRegistrationKey(json["regId"])
+            def deviceInstance = Device.findByRegistrationKey(json["regid"])
             if (deviceInstance == null) {
                 notFound()
                 return

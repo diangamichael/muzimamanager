@@ -24,7 +24,7 @@ class Device {
         name nullable: false, blank: false
         description nullable: false, blank: false
         registrationKey nullable: true, blank: true
-        purchasedDate nullable: false, max: new Date()
+        purchasedDate nullable: false
         deviceType nullable: false
         status nullable: false, blank: false
     }
