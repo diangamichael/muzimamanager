@@ -34,6 +34,16 @@ class MessageController {
         def json = request.JSON
         def operation = json["operation"]
         if (operation == "register") {
+            def personInstance
+            def identifier = json["identifier"]?.toString()
+            if (identifier.trim()) {
+                personInstance = Person.findByIdentifier(identifier)
+                if (personInstance == null) {
+                    render status: NOT_FOUND
+                    return
+                }
+            }
+
             def deviceInstance = Device.findByImei(json["imei"])
             if (deviceInstance == null) {
                 deviceInstance = new Device()
@@ -56,6 +66,14 @@ class MessageController {
             deviceInstance.setRegistrationKey(json["regid"])
             deviceInstance.setStatus("Registered")
             deviceInstance.save(flush: true, failOnError: true)
+
+            if (personInstance != null && deviceInstance != null) {
+                def assignmentInstance = new Assignment(
+                        device: deviceInstance, person: personInstance
+                )
+                assignmentInstance.save flush: true, failOnError: true
+            }
+
         } else if (operation == "unregister") {
             def deviceInstance = Device.findByRegistrationKey(json["regid"])
             if (deviceInstance == null) {
@@ -66,9 +84,6 @@ class MessageController {
             deviceInstance.setStatus("Unregistered")
             deviceInstance.save(flush: true, failOnError: true)
         }
-
-        // TODO: automate finding person by the username or email address and then create the assignment
-
         render status: OK
     }
 

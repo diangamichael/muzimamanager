@@ -19,6 +19,7 @@ class PersonController {
     def convert(Person personInstance) {
         def person = [
                 id             : personInstance.id,
+                identifier     : personInstance.identifier,
                 gender         : personInstance.gender,
                 birthdate      : personInstance.birthdate.time,
                 personNames    : personInstance.personNames.collect {
@@ -124,6 +125,12 @@ class PersonController {
             def personAddressInstance = new PersonAddress(it)
             personInstance.addToPersonAddresses(personAddressInstance)
         }
+
+        PersonName personName = personInstance.getPersonName()
+        def identifier = personName.getGivenName().substring(0, 1) + personName.getFamilyName().substring(0, 1);
+        int total = Person.countByIdentifierLike(identifier.toLowerCase() + "%")
+        personInstance.setIdentifier(identifier.toLowerCase() + (total + 1))
+
         personInstance.save(flush: true, failOnError: true)
         response.status = CREATED.value()
         render(contentType: "application/json") {

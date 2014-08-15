@@ -20,7 +20,8 @@ class Device {
 
     static constraints = {
         imei nullable: false, blank: false, unique: true
-        sim nullable: false, blank: false, unique: true
+        // optional sim because of the wifi only on Nexus 7
+        sim nullable: true, blank: true, unique: false
         name nullable: false, blank: false
         description nullable: false, blank: false
         registrationKey nullable: true, blank: true

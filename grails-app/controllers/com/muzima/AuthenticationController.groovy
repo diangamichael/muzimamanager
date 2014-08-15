@@ -39,6 +39,5 @@ class AuthenticationController {
     }
 
     def save() {
-
     }
 }

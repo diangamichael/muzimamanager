@@ -33,7 +33,7 @@ class BootStrap {
 
         def firstPersonName = new PersonName(givenName: "Family", familyName: "First")
         def firstPersonAddress = new PersonAddress(address1: "Address First Person")
-        def firstPerson = new Person(gender: "F", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2008"), institution: firstInstitution)
+        def firstPerson = new Person(identifier: "ff1", gender: "F", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2008"), institution: firstInstitution)
         firstPerson.addToPersonNames(firstPersonName)
         firstPerson.addToPersonAddresses(firstPersonAddress)
         firstPerson.save(flush: true, failOnError: true)
@@ -45,7 +45,7 @@ class BootStrap {
                 cityVillage: "Muncie", countyDistrict: "Delaware", stateProvince: "IN", postalCode: "47304")
         def secondPersonSecondAddress = new PersonAddress(address1: "5442 Elkhorn Dr", address2: "APT 1123",
                 cityVillage: "Indianapolis", countyDistrict: "Marion", stateProvince: "IN", postalCode: "46254")
-        def secondPerson = new Person(gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2009"), institution: firstInstitution)
+        def secondPerson = new Person(identifier: "fs1", gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2009"), institution: firstInstitution)
         secondPerson.addToPersonNames(secondPersonName)
         secondPerson.addToPersonNames(secondPersonSecondName)
         secondPerson.addToPersonAddresses(secondPersonAddress)

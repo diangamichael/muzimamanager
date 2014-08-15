@@ -2,6 +2,7 @@ package com.muzima
 
 class Person {
 
+    String identifier
     String gender
     Date birthdate
 
@@ -10,6 +11,7 @@ class Person {
     static belongsTo = [institution: Institution]
 
     static constraints = {
+        identifier nullable: false, blank: false
         gender nullable: false, blank: false
         birthdate nullable: false, max: new Date()
     }
