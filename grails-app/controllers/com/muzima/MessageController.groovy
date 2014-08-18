@@ -72,6 +72,15 @@ class MessageController {
                         device: deviceInstance, person: personInstance
                 )
                 assignmentInstance.save flush: true, failOnError: true
+                def personName = personInstance.personName
+                render(contentType: "application/json") {
+                    status = OK
+                    identifier = personInstance.identifier
+                    givenName = personName.givenName
+                    middleName = personName.middleName
+                    familyName = personName.familyName
+                }
+                return;
             }
 
         } else if (operation == "unregister") {
