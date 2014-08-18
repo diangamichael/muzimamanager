@@ -73,8 +73,7 @@ class MessageController {
                 )
                 assignmentInstance.save flush: true, failOnError: true
                 def personName = personInstance.personName
-                render(contentType: "application/json") {
-                    status = OK
+                render(contentType: "application/json", status: OK) {
                     identifier = personInstance.identifier
                     givenName = personName.givenName
                     middleName = personName.middleName
