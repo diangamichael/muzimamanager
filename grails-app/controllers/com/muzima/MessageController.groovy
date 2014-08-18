@@ -35,8 +35,8 @@ class MessageController {
         def operation = json["operation"]
         if (operation == "register") {
             def personInstance
-            def identifier = json["identifier"]?.toString()
-            if (identifier.trim()) {
+            def identifier = json["identifier"]
+            if (identifier != null && identifier.trim()) {
                 personInstance = Person.findByIdentifier(identifier)
                 if (personInstance == null) {
                     render status: NOT_FOUND
