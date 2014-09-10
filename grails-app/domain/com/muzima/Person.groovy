@@ -13,7 +13,7 @@ class Person {
     static constraints = {
         identifier nullable: false, blank: false
         gender nullable: false, blank: false
-        birthdate nullable: false, max: new Date()
+        birthdate nullable: false, {return (it > new Date())}
     }
 
     static mapping = {
