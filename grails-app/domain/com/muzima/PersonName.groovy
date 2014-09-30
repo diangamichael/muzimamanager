@@ -28,3 +28,4 @@ class PersonName {
         this.degree = personName.degree
     }
 }
+

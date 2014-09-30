@@ -13,13 +13,10 @@ class Device {
 
     static belongsTo = [institution: Institution]
 
-    static mapping = {
-        registrationKey column: "registration_key", sqlType: "varchar", length: 1024
-        description column: "description", sqlType: "varchar", length: 1024
-    }
-
     static constraints = {
         imei nullable: false, blank: false, unique: true
+        registrationKey maxSize: 1024
+        description maxSize: 1024
         // optional sim because of the wifi only on Nexus 7
         sim nullable: true, blank: true, unique: false
         name nullable: false, blank: false
