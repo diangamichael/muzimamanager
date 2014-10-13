@@ -95,6 +95,10 @@ class AssignmentController {
     @Secured(['isFullyAuthenticated()'])
     def show() {
         def assignmentInstance = Assignment.get(params.id)
+        if (assignmentInstance == null) {
+            notFound()
+            return
+        }
         render(contentType: "application/json") {
             convert(assignmentInstance)
         }

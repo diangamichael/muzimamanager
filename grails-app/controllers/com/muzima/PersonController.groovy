@@ -95,6 +95,10 @@ class PersonController {
     @Secured(['isFullyAuthenticated()'])
     def show() {
         def personInstance = Person.get(params.id)
+        if (personInstance == null) {
+            notFound()
+            return
+        }
         render(contentType: "application/json") {
             convert(personInstance)
         }

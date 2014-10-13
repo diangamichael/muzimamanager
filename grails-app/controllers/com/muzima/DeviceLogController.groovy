@@ -55,6 +55,10 @@ class DeviceLogController {
     @Secured(['isFullyAuthenticated()'])
     def show() {
         def deviceLogInstance = DeviceLog.get(params.id)
+        if (deviceLogInstance == null) {
+            notFound()
+            return
+        }
         render(contentType: "application/json") {
             convert(deviceLogInstance)
         }

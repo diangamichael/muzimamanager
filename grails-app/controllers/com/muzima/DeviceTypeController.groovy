@@ -75,6 +75,10 @@ class DeviceTypeController {
     @Secured(['isFullyAuthenticated()'])
     def show() {
         def deviceTypeInstance = DeviceType.get(params.id)
+        if (deviceTypeInstance == null) {
+            notFound()
+            return
+        }
         render(contentType: "application/json") {
             convert(deviceTypeInstance)
         }

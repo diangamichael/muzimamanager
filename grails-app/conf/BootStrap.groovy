@@ -37,7 +37,8 @@ class BootStrap {
         firstPerson.addToPersonNames(firstPersonName)
         firstPerson.addToPersonAddresses(firstPersonAddress)
         firstPerson.save(flush: true, failOnError: true)
-
+        testUser1.setPerson(firstPerson)
+        testUser1.save(flush: true)
 
         def secondPersonName = new PersonName(givenName: "Family", familyName: "Second")
         def secondPersonSecondName = new PersonName(givenName: "Family", familyName: "Second", middleName: "Second")
@@ -51,6 +52,8 @@ class BootStrap {
         secondPerson.addToPersonAddresses(secondPersonAddress)
         secondPerson.addToPersonAddresses(secondPersonSecondAddress)
         secondPerson.save(flush: true, failOnError: true)
+        testUser2.setPerson(secondPerson)
+        testUser2.save(flush: true)
 
         def nexusOneType = new DeviceType(name: "Nexus One", description: "The Nexus One (codenamed HTC " +
                 "Passion) is an Android smartphone designed and manufactured by HTC as Google's first Google Nexus " +
