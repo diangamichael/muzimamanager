@@ -38,10 +38,6 @@ class MessageController {
             def identifier = json["identifier"]
             if (identifier != null && identifier.trim()) {
                 personInstance = Person.findByIdentifier(identifier)
-                if (personInstance == null) {
-                    render status: NOT_FOUND
-                    return
-                }
             }
 
             def deviceInstance = Device.findByImei(json["imei"])

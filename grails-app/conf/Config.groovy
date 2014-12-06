@@ -123,9 +123,11 @@ log4j = {
 grails.mime.use.accept.header = true
 grails.mime.disable.accept.header.userAgents = []
 grails.plugin.springsecurity.filterChain.chainMap = [
+        '/api/message': 'anonymousAuthenticationFilter,restTokenValidationFilter,restExceptionTranslationFilter,filterInvocationInterceptor', // Stateless with anonymous allowed
         '/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter',  // Stateless chain
         '/**': 'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'                                          // Traditional chain
 ]
+grails.plugin.springsecurity.rest.token.validation.enableAnonymousAccess = true
 
 // Added by the Spring Security Core plugin:
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.muzima.User'
