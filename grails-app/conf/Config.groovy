@@ -94,7 +94,7 @@ environments {
         grails.logging.jul.usebridge = true
     }
     production {
-        grails.logging.jul.usebridge = false
+        grails.logging.jul.usebridge = true
         // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
@@ -107,7 +107,7 @@ log4j = {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
 
-    error 'org.codehaus.groovy.grails.web.servlet',        // controllers
+    debug 'org.codehaus.groovy.grails.web.servlet',        // controllers
             'org.codehaus.groovy.grails.web.pages',          // GSP
             'org.codehaus.groovy.grails.web.sitemesh',       // layouts
             'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
@@ -117,7 +117,25 @@ log4j = {
             'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
             'org.springframework',
             'org.hibernate',
-            'net.sf.ehcache.hibernate'
+            'net.sf.ehcache.hibernate',
+            'grails-app',
+            'com.muzima'
+
+    environments {
+        production {
+            error 'org.codehaus.groovy.grails.web.servlet',        // controllers
+                    'org.codehaus.groovy.grails.web.pages',          // GSP
+                    'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+                    'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+                    'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+                    'org.codehaus.groovy.grails.commons',            // core / classloading
+                    'org.codehaus.groovy.grails.plugins',            // plugins
+                    'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
+                    'org.springframework',
+                    'org.hibernate',
+                    'net.sf.ehcache.hibernate'
+        }
+    }
 }
 
 grails.mime.use.accept.header = true

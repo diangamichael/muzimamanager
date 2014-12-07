@@ -1,10 +1,8 @@
 dataSource {
     pooled = true
     jmxExport = true
-    driverClassName = "org.h2.Driver"
-    username = "sa"
-    password = ""
 }
+
 hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = false
@@ -17,6 +15,9 @@ hibernate {
 environments {
     development {
         dataSource {
+            driverClassName = "org.h2.Driver"
+            username = "sa"
+            password = ""
             dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
             url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
 //            logSql = true
@@ -24,6 +25,9 @@ environments {
     }
     test {
         dataSource {
+            driverClassName = "org.h2.Driver"
+            username = "sa"
+            password = ""
             dbCreate = "update"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
 //            logSql = true
@@ -31,8 +35,11 @@ environments {
     }
     production {
         dataSource {
+            driverClassName = "com.mysql.jdbc.Driver"
+            username = "devsec_user"
+            password = "password"
             dbCreate = "update"
-            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+            url = "jdbc:mysql://localhost/devsec"
             properties {
                 // See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation
                 jmxEnabled = true
@@ -51,8 +58,8 @@ environments {
                 testWhileIdle = true
                 testOnReturn = false
                 jdbcInterceptors = "ConnectionState"
-                defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
-//                logSql = true
+                //defaultTransactionIsolation = java.sql.Connection.TRANSACTION_READ_COMMITTED
+                //logSql = true
             }
         }
     }

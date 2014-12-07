@@ -12,7 +12,17 @@ import com.muzima.UserRole
 class BootStrap {
 
     def init = { servletContext ->
+        if (User.count() >= 1){
+            log.debug "Not an initial deploy. Not running BootStrap"
+        } else {
+            log.debug "Initializing DB."
+            initializeDB()
+        }
 
+
+    }
+
+    def initializeDB = {
         def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
         def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
         assert Role.count() == 2
@@ -242,8 +252,9 @@ class BootStrap {
                 description: "HCT device #001 description", status: "New", purchasedDate: new Date().parse("dd/MM/yyyy", "22/03/2013"),
                 deviceType: nexusOneType, institution: firstInstitution)
         firstDevice.save(flush: true, failOnError: true)
-
     }
+
     def destroy = {
+
     }
 }
