@@ -17,4 +17,13 @@ class Assignment {
         dateVoided nullable: true
         voidedReason nullable: true
     }
+
+    void updateAssignment(Assignment assignment) {
+        this.person = assignment.person
+        this.device = assignment.device
+
+        this.voided = assignment.voided
+        this.dateVoided = assignment.dateVoided
+        this.voidedReason = assignment.voidedReason
+    }
 }

@@ -8,7 +8,7 @@ class DeviceType {
     static hasMany = [deviceDetails: DeviceDetail]
 
     static mapping = {
-        description column: "description", sqlType: "varchar", length: 1024
+        description column: "description", sqlType: "varchar(1024)"
     }
 
     static constraints = {

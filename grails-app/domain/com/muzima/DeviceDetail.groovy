@@ -9,9 +9,9 @@ class DeviceDetail {
     static belongsTo = [deviceType: DeviceType]
 
     static mapping = {
-        category sqlType: "varchar", length: 1024
-        subCategory sqlType: "varchar", length: 1024
-        categoryValue sqlType: "varchar", length: 1024
+        category sqlType: "varchar(30)"
+        subCategory sqlType: "varchar(30)"
+        categoryValue sqlType: "varchar(255)"
     }
 
     static constraints = {

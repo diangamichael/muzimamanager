@@ -48,11 +48,14 @@ class DeviceController {
                 firstResult: params.offset
                 maxResults: params.max
                 createAlias("deviceType", "deviceType")
-                or {
-                    ilike("imei", "%" + params.query + "%")
-                    ilike("sim", "%" + params.query + "%")
-                    ilike("name", "%" + params.query + "%")
-                    ilike("deviceType.name", "%" + params.query + "%")
+                and {
+                    or {
+                        ilike("imei", "%" + params.query + "%")
+                        ilike("sim", "%" + params.query + "%")
+                        ilike("name", "%" + params.query + "%")
+                        ilike("deviceType.name", "%" + params.query + "%")
+                    }
+                    ne("voided",true)
                 }
             }.each {
                 deviceMap.add(convert(it))
@@ -61,11 +64,14 @@ class DeviceController {
             deviceCount =
                     Device.createCriteria().list() {
                         createAlias("deviceType", "deviceType")
-                        or {
-                            ilike("imei", "%" + params.query + "%")
-                            ilike("sim", "%" + params.query + "%")
-                            ilike("name", "%" + params.query + "%")
-                            ilike("deviceType.name", "%" + params.query + "%")
+                        and {
+                            or {
+                                ilike("imei", "%" + params.query + "%")
+                                ilike("sim", "%" + params.query + "%")
+                                ilike("name", "%" + params.query + "%")
+                                ilike("deviceType.name", "%" + params.query + "%")
+                            }
+                            ne("voided",true)
                         }
                         projections {
                             countDistinct("id")
