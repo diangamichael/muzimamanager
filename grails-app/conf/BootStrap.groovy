@@ -10,6 +10,8 @@ import com.muzima.User
 import com.muzima.UserRole
 
 class BootStrap {
+    def firstInstitution, nexusOneType
+    def userRole, adminRole
 
     def init = { servletContext ->
         if (User.count() >= 1){
@@ -17,55 +19,46 @@ class BootStrap {
         } else {
             log.debug "Initializing DB."
             initializeDB()
+            environments {
+                production {
+                    log.debug "Initializing Production DB."
+                    initializeProdDB()
+                }
+                development {
+                    log.debug "Initializing Development DB."
+                    initializeDevTestDB()
+                }
+                test {
+                    log.debug "Initializing Test DB."
+                    initializeDevTestDB()
+                }
+            }
         }
-
-
     }
 
     def initializeDB = {
-        def adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
-        def userRole = new Role(authority: 'ROLE_USER').save(flush: true)
-        assert Role.count() == 2
-
-        def testUser1 = new User(username: 'root', password: 'password')
-        testUser1.save(flush: true)
-
-        def testUser2 = new User(username: 'you', password: 'password')
-        testUser2.save(flush: true)
-        assert User.count() == 2
-
-        UserRole.create testUser1, adminRole, true
-        UserRole.create testUser2, userRole, true
-        assert UserRole.count() == 2
-
-        def firstInstitution = new Institution(name: "First Institution", description: "This is the first institution.")
+        firstInstitution = new Institution(name: "First Institution", description: "This is the first institution.")
         firstInstitution.save(flush: true)
 
-        def firstPersonName = new PersonName(givenName: "Family", familyName: "First")
-        def firstPersonAddress = new PersonAddress(address1: "Address First Person")
-        def firstPerson = new Person(identifier: "ff1", gender: "F", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2008"), institution: firstInstitution)
-        firstPerson.addToPersonNames(firstPersonName)
-        firstPerson.addToPersonAddresses(firstPersonAddress)
-        firstPerson.save(flush: true, failOnError: true)
-        testUser1.setPerson(firstPerson)
-        testUser1.save(flush: true)
+        def superUserRole = new Role(authority: 'ROLE_SUPERVISOR').save(flush: true)
+        adminRole = new Role(authority: 'ROLE_ADMIN').save(flush: true)
+        userRole = new Role(authority: 'ROLE_USER').save(flush: true)
+        assert Role.count() == 3
 
-        def secondPersonName = new PersonName(givenName: "Family", familyName: "Second")
-        def secondPersonSecondName = new PersonName(givenName: "Family", familyName: "Second", middleName: "Second")
-        def secondPersonAddress = new PersonAddress(address1: "2201 W Bethel Ave", address2: "APT 77",
-                cityVillage: "Muncie", countyDistrict: "Delaware", stateProvince: "IN", postalCode: "47304")
-        def secondPersonSecondAddress = new PersonAddress(address1: "5442 Elkhorn Dr", address2: "APT 1123",
-                cityVillage: "Indianapolis", countyDistrict: "Marion", stateProvince: "IN", postalCode: "46254")
-        def secondPerson = new Person(identifier: "fs1", gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2009"), institution: firstInstitution)
-        secondPerson.addToPersonNames(secondPersonName)
-        secondPerson.addToPersonNames(secondPersonSecondName)
-        secondPerson.addToPersonAddresses(secondPersonAddress)
-        secondPerson.addToPersonAddresses(secondPersonSecondAddress)
-        secondPerson.save(flush: true, failOnError: true)
-        testUser2.setPerson(secondPerson)
-        testUser2.save(flush: true)
+        def rootPersonName = new PersonName(givenName: "Super", familyName: "User")
+        def rootPersonAddress = new PersonAddress(address1: "Address First Person")
+        def rootPerson = new Person(identifier: "su1", gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2008"), institution: firstInstitution)
+        rootPerson.addToPersonNames(rootPersonName)
+        rootPerson.addToPersonAddresses(rootPersonAddress)
+        rootPerson.save(flush: true, failOnError: true)
 
-        def nexusOneType = new DeviceType(name: "Nexus One", description: "The Nexus One (codenamed HTC " +
+        def rootUser = new User(username: 'root', password: 'password')
+        rootUser.setPerson(rootPerson)
+        rootUser.save(flush: true)
+
+        UserRole.create rootUser, superUserRole, true
+
+        nexusOneType = new DeviceType(name: "Nexus One", description: "The Nexus One (codenamed HTC " +
                 "Passion) is an Android smartphone designed and manufactured by HTC as Google's first Google Nexus " +
                 "smartphone. The Nexus One became available on January 5, 2010, and features the ability to " +
                 "transcribe voice to text, an additional microphone for dynamic noise suppression, and voice guided " +
@@ -247,9 +240,56 @@ class BootStrap {
             huaweiAscendType.addToDeviceDetails(huaweiAscendDetailInstance)
         }
         huaweiAscendType.save(flush: true, failOnError: true)
+    }
+
+    def initializeProdDB = {
+
+        def webAdminPersonName = new PersonName(givenName: "Web", familyName: "Administrator")
+        def webAdminPersonAddress = new PersonAddress(address1: "2201 W Bethel Ave", address2: "APT 77",
+                cityVillage: "Muncie", countyDistrict: "Delaware", stateProvince: "IN", postalCode: "47304")
+        def webAdminPersonSecondAddress = new PersonAddress(address1: "5442 Elkhorn Dr", address2: "APT 1123",
+                cityVillage: "Indianapolis", countyDistrict: "Marion", stateProvince: "IN", postalCode: "46254")
+        def webAdminPerson = new Person(identifier: "wa1", gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2009"), institution: firstInstitution)
+        webAdminPerson.addToPersonNames(webAdminPersonName)
+        webAdminPerson.addToPersonAddresses(webAdminPersonAddress)
+        webAdminPerson.addToPersonAddresses(webAdminPersonSecondAddress)
+        webAdminPerson.save(flush: true, failOnError: true)
+
+        def webAdminUser = new User(username: 'webadmin', password: 'password')
+        webAdminUser.setPerson(webAdminPerson)
+        webAdminUser.save(flush: true)
+        assert User.count() == 2
+
+        UserRole.create webAdminUser, adminRole, true
+        assert UserRole.count() == 2
+    }
+
+    def initializeDevTestDB = {
+
+        def testUser2 = new User(username: 'you', password: 'password')
+        testUser2.save(flush: true)
+        assert User.count() == 2
+
+        UserRole.create testUser2, userRole, true
+        assert UserRole.count() == 2
+
+        def secondPersonName = new PersonName(givenName: "Family", familyName: "Second")
+        def secondPersonSecondName = new PersonName(givenName: "Family", familyName: "Second", middleName: "Second")
+        def secondPersonAddress = new PersonAddress(address1: "2201 W Bethel Ave", address2: "APT 77",
+                cityVillage: "Muncie", countyDistrict: "Delaware", stateProvince: "IN", postalCode: "47304")
+        def secondPersonSecondAddress = new PersonAddress(address1: "5442 Elkhorn Dr", address2: "APT 1123",
+                cityVillage: "Indianapolis", countyDistrict: "Marion", stateProvince: "IN", postalCode: "46254")
+        def secondPerson = new Person(identifier: "fs1", gender: "M", birthdate: new Date().parse("dd/MM/yyyy", "28/09/2009"), institution: firstInstitution)
+        secondPerson.addToPersonNames(secondPersonName)
+        secondPerson.addToPersonNames(secondPersonSecondName)
+        secondPerson.addToPersonAddresses(secondPersonAddress)
+        secondPerson.addToPersonAddresses(secondPersonSecondAddress)
+        secondPerson.save(flush: true, failOnError: true)
+        testUser2.setPerson(secondPerson)
+        testUser2.save(flush: true)
 
         def firstDevice = new Device(imei: "000000000000000", sim: "15555215554", name: "HCT Device #001",
-                description: "HCT device #001 description", status: "New", purchasedDate: new Date().parse("dd/MM/yyyy", "22/03/2013"),
+                description: "HCT device #001 description", registrationKey: "000000000000000", status: "New", purchasedDate: new Date().parse("dd/MM/yyyy", "22/03/2013"),
                 deviceType: nexusOneType, institution: firstInstitution)
         firstDevice.save(flush: true, failOnError: true)
     }
