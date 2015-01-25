@@ -29,5 +29,5 @@
 # "temporary" build files
 /target
 .idea
-muzimamdm.iml
-muzimamdm-grailsPlugins.iml
+muzimamanager-grailsPlugins.iml
+muzimamanager.iml
