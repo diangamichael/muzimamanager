@@ -25,21 +25,26 @@ environments {
     }
     test {
         dataSource {
-            driverClassName = "org.h2.Driver"
-            username = "sa"
-            password = ""
-            dbCreate = "update"
-            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+//            driverClassName = "org.h2.Driver"
+//            username = "sa"
+//            password = ""
+//            dbCreate = "update"
+//            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
 //            logSql = true
+            dbCreate = "update"
+            url = ""
+            driverClassName = ""
+            username = ""
+            password = ""
         }
     }
     production {
         dataSource {
-            driverClassName = "com.mysql.jdbc.Driver"
-            username = "devsec_user"
-            password = "password"
             dbCreate = "update"
-            url = "jdbc:mysql://localhost/devsec"
+            url = ""
+            driverClassName = ""
+            username = ""
+            password = ""
             properties {
                 // See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation
                 jmxEnabled = true

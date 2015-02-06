@@ -1,15 +1,51 @@
-// locations to search for config files that get merged into the main config;
-// config files can be ConfigSlurper scripts, Java properties files, or classes
-// in the classpath in ConfigSlurper format
+// -------------------------------------------------------------------------------- //
+// - START: CONFIGURATION FILE LOADING -------------------------------------------- //
+// -------------------------------------------------------------------------------- //
+// locations to search for config files that get merged into the main config
+// config files can either be Java properties files or ConfigSlurper scripts
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
+def ENV_NAME = "${appName}.config.location"
+if(!grails.config.locations || !(grails.config.locations instanceof List)) {
+    grails.config.locations = []
+}
 
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
+println "--------------------------------------------------------------------------------"
+println "- Loading configuration file                                                   -"
+println "--------------------------------------------------------------------------------"
+
+// 1: check for environment variable that has been set! This variable must point to the
+// configuration file that must be used. Can be a .groovy or .properties file!
+if(System.getenv(ENV_NAME) && new File(System.getenv(ENV_NAME)).exists()) {
+    println("Including System Environment configuration file: " + System.getenv(ENV_NAME))
+    grails.config.locations << "file:" + System.getenv(ENV_NAME)
+
+// 2: check on local project config file in ${userHome}/.grails/${appName}...
+} else if (new File("${userHome}/.grails/${appName}/${appName}-config.groovy").exists()) {
+    println "*** User defined config: file:${userHome}/.grails/${appName}/${appName}-config.groovy ***"
+    grails.config.locations = ["file:${userHome}/.grails/${appName}/${appName}-config.groovy"]
+} else if (new File("${userHome}/.grails/${appName}/${appName}-config.properties").exists()) {
+    println "*** User defined config: file:${userHome}/.grails/${appName}/${appName}-config.properties ***"
+    grails.config.locations = ["file:${userHome}/.grails/${appName}/${appName}-config.properties"]
+
+// 3: check on local project config file in the project root directory
+} else if (new File("./${appName}-config.groovy").exists()) {
+    println "*** User defined config: file:./${appName}-config.groovy ***"
+    grails.config.locations = ["file:./${appName}-config.groovy"]
+} else if (new File("./${appName}-config.properties").exists()) {
+    println "*** User defined config: file:./${appName}-config.properties ***"
+    grails.config.locations = ["file:./${appName}-config.groovy"]
+
+// 4: No configuration file defined. We have problem!!
+} else {
+    println "********************************************************************************"
+    println "* No external configuration file defined                                       *"
+    println "********************************************************************************"
+}
+println "(*) grails.config.locations = ${grails.config.locations}"
+println "--------------------------------------------------------------------------------"
+// -------------------------------------------------------------------------------- //
+// - END: CONFIGURATION FILE LOADING ---------------------------------------------- //
+// -------------------------------------------------------------------------------- //
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
@@ -109,7 +145,6 @@ log4j = {
     appenders {
         console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     }
-
     debug   'org.codehaus.groovy.grails.web.servlet',        // controllers
             'org.codehaus.groovy.grails.web.pages',          // GSP
             'org.codehaus.groovy.grails.web.sitemesh',       // layouts
@@ -126,17 +161,8 @@ log4j = {
 
     environments {
         production {
-            error   'org.codehaus.groovy.grails.web.servlet',        // controllers
-                    'org.codehaus.groovy.grails.web.pages',          // GSP
-                    'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-                    'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-                    'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-                    'org.codehaus.groovy.grails.commons',            // core / classloading
-                    'org.codehaus.groovy.grails.plugins',            // plugins
-                    'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
-                    'org.springframework',
-                    'org.hibernate',
-                    'net.sf.ehcache.hibernate'
+            error   'grails-app',
+                    'com.muzima'
         }
     }
 }
