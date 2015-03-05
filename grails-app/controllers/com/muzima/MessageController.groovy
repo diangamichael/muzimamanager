@@ -1,6 +1,7 @@
 package com.muzima
 
 import grails.plugin.springsecurity.annotation.Secured
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
@@ -43,7 +44,9 @@ class MessageController {
             def deviceInstance = Device.findByImei(json["imei"])
             if (deviceInstance == null) {
                 deviceInstance = new Device()
-                deviceInstance.setSim(json["sim"])
+                def sim = json["sim"]
+                if (!JSONObject.NULL.equals(sim))
+                    deviceInstance.setSim(sim)
                 deviceInstance.setImei(json["imei"])
                 deviceInstance.setPurchasedDate(new Date())
 
