@@ -4,9 +4,6 @@
 
 import grails.util.Holders
 import org.apache.commons.codec.binary.Base64
-import org.apache.ivy.core.module.descriptor.Configuration
-import org.apache.tomcat.util.http.Parameters
-
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
