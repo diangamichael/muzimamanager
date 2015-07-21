@@ -114,9 +114,6 @@ class AssignmentController {
         def assignmentInstance = new Assignment(
                 device: Device.get(device["id"]),
                 person: Person.get(person["id"]),
-//                voided: json["voided"],
-//                voidedReason: json["voidedReason"],
-//                dateVoided: json["dateVoided"]
         )
         if (assignmentInstance == null) {
             notFound()
@@ -142,19 +139,6 @@ class AssignmentController {
 
         def jsonAssignment = new Assignment(json)
         assignmentInstance.updateAssignment(jsonAssignment)
-
-        def device = json["device"]
-        def deviceInstance = Device.get(device["id"])
-        def person = json["person"]
-//        def voidedReason = json["voidedReason"]
-//        def voided = json["voided"]
-//        def dateVoided = Date.parse(json["dateVoided"])
-//        def personInstance = Person.get(person["id"])
-//        assignmentInstance.setDevice(deviceInstance)
-//        assignmentInstance.setPerson(personInstance)
-//        assignmentInstance.setVoided(voided)
-//        assignmentInstance.setVoidedReason(voidedReason)
-//        assignmentInstance.dateVoided = dateVoided
 
         assignmentInstance.save flush: true, failOnError: true
         response.status = OK.value()

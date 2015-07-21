@@ -5,6 +5,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 
 import static org.springframework.http.HttpStatus.NOT_FOUND
 import static org.springframework.http.HttpStatus.OK
+import static org.springframework.http.HttpStatus.EXPECTATION_FAILED
 
 class MessageController {
 
@@ -44,9 +45,6 @@ class MessageController {
             def deviceInstance = Device.findByImei(json["imei"])
             if (deviceInstance == null) {
                 deviceInstance = new Device()
-                def sim = json["sim"]
-                if (!JSONObject.NULL.equals(sim))
-                    deviceInstance.setSim(sim)
                 deviceInstance.setImei(json["imei"])
                 deviceInstance.setPurchasedDate(new Date())
 
@@ -62,14 +60,38 @@ class MessageController {
                 }
                 deviceInstance.setDescription("_BLANK_")
             }
+            // always save SIM, it may have changed
+            def sim = json["sim"]
+            if (!JSONObject.NULL.equals(sim))
+                deviceInstance.setSim(sim)
+
+            // just in case devise was previously voided, un-void it
+            deviceInstance.setVoided(false)
+            deviceInstance.setDateVoided(null)
+            deviceInstance.setVoidedReason(null)
+
             deviceInstance.setRegistrationKey(json["regid"])
             deviceInstance.setStatus("Registered")
-            deviceInstance.save(flush: true, failOnError: true)
+            if (!deviceInstance.save(flush: true)){
+                render(contentType: "application/json", status: EXPECTATION_FAILED) {
+                    errorMessage = "Not all required parameters were found"
+                }
+                return;
+            }
 
             if (personInstance != null && deviceInstance != null) {
-                def assignmentInstance = new Assignment(
-                        device: deviceInstance, person: personInstance
-                )
+                def assignmentInstance = Assignment.findByDevice(deviceInstance)
+                if (assignmentInstance == null) {
+                    assignmentInstance = new Assignment()
+                }
+                assignmentInstance.setDevice(deviceInstance)
+                assignmentInstance.setPerson(personInstance)
+
+                // just in case devise was previously voided, un-void it
+                assignmentInstance.setVoided(false)
+                assignmentInstance.setDateVoided(null)
+                assignmentInstance.setVoidedReason(null)
+
                 assignmentInstance.save flush: true, failOnError: true
                 def personName = personInstance.personName
                 render(contentType: "application/json", status: OK) {
@@ -87,7 +109,7 @@ class MessageController {
                 notFound()
                 return
             }
-            deviceInstance.setRegistrationKey(null)
+            deviceInstance.setRegistrationKey("000000000000000")
             deviceInstance.setStatus("Unregistered")
             deviceInstance.save(flush: true, failOnError: true)
         }

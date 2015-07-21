@@ -111,8 +111,6 @@ class DeviceController {
             // TODO: (hack) we're assuming we have only 1 institution for now in each installation.
             deviceInstance.setInstitution(it)
         }
-        deviceInstance.setStatus("New Device")
-        deviceInstance.setDescription("_BLANK_")
 
         deviceInstance.save(flush: true, failOnError: true)
         response.status = CREATED.value();
