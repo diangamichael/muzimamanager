@@ -35,7 +35,7 @@ if(System.getenv(ENV_NAME) && new File(System.getenv(ENV_NAME)).exists()) {
     println "*** User defined config: file:./${appName}-config.properties ***"
     grails.config.locations = ["file:./${appName}-config.groovy"]
 
-// 4: No configuration file defined. We have problem!!
+// 4: No configuration file defined. We have a problem!!
 } else {
     println "********************************************************************************"
     println "* No external configuration file defined                                       *"
@@ -166,6 +166,17 @@ log4j = {
         }
     }
 }
+
+//cors config.
+cors.enabled=true
+cors.url.pattern = '/api/*'
+cors.headers=[
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true,
+    'Access-Control-Allow-Headers': 'origin, authorization, accept, content-type, x-requested-with',
+    'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS',
+    'Access-Control-Max-Age': 8000
+    ]
 
 grails.mime.use.accept.header = true
 grails.mime.disable.accept.header.userAgents = []
