@@ -42,6 +42,14 @@ class MessageController {
                 personInstance = Person.findByIdentifier(identifier)
             }
 
+            // if person instance is null, return with error
+            if (personInstance == null) {
+                render(contentType: "application/json", status: EXPECTATION_FAILED) {
+                    errorMessage = "Invalid User Specified. Confirm your Unique ID"
+                }
+                return;
+            }
+
             def deviceInstance = Device.findByImei(json["imei"])
             if (deviceInstance == null) {
                 deviceInstance = new Device()
