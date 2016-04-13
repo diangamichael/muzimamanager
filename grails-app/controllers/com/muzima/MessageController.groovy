@@ -45,7 +45,7 @@ class MessageController {
             // if person instance is null, return with error
             if (personInstance == null) {
                 render(contentType: "application/json", status: EXPECTATION_FAILED) {
-                    errorMessage = "Invalid User Specified. Confirm your Unique ID"
+                    errorMessage = "Invalid user '" +identifier + "' specified. Confirm your Unique ID"
                 }
                 return;
             }
@@ -57,6 +57,14 @@ class MessageController {
                 deviceInstance.setPurchasedDate(new Date())
 
                 def deviceTypeInstance = DeviceType.findByName(json["type"])
+
+                // if device type does not exist, respond with the appropriate error
+                if (deviceTypeInstance == null) {
+                    render(contentType: "application/json", status: EXPECTATION_FAILED) {
+                        errorMessage = "Device Type '" + json["type"] + "' does NOT exist on the server!"
+                    }
+                    return;
+                }
                 deviceInstance.setDeviceType(deviceTypeInstance)
 
                 def count = Device.countByDeviceType(deviceTypeInstance)
